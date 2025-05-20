@@ -3,6 +3,9 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from io import StringIO
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
 
 st.set_page_config(page_title="CleanVizBio", layout="wide")
 st.title("🧬 CleanVizBio: Scientific Data Cleaning & Visualization")
@@ -67,6 +70,25 @@ if uploaded_file:
                 fig, ax = plt.subplots()
                 sns.heatmap(df[numeric_cols].corr(), annot=True, cmap='coolwarm', ax=ax)
                 st.pyplot(fig)
+
+            elif plot_type == "PCA":
+    st.write("🔬 PCA - Principal Component Analysis")
+
+    # Drop any rows with NaN and scale the data
+    df_clean = df[numeric_cols].dropna()
+    scaled = StandardScaler().fit_transform(df_clean)
+
+    # Run PCA
+    pca = PCA(n_components=2)
+    components = pca.fit_transform(scaled)
+
+    # Create a PCA DataFrame
+    pca_df = pd.DataFrame(data=components, columns=["PC1", "PC2"])
+    fig, ax = plt.subplots()
+    sns.scatterplot(x="PC1", y="PC2", data=pca_df, ax=ax)
+    ax.set_title("PCA: PC1 vs. PC2")
+    st.pyplot(fig)
+
 
         st.subheader("Download Cleaned Data")
         csv = df.to_csv(index=False).encode('utf-8')
