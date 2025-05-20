@@ -116,34 +116,33 @@ if uploaded_file:
             elif plot_type == "PCA":
                 st.write("🔬 PCA - Principal Component Analysis")
 
-                # Drop any rows with NaN and scale the data
                 df_clean = df[numeric_cols].dropna()
-                scaled = StandardScaler().fit_transform(df_clean)
+    
+                if df_clean.shape[0] < 2 or df_clean.shape[1] < 2:
+                     st.warning("❗ PCA requires at least 2 samples and 2 numeric columns.")
+                else:
+                    scaled = StandardScaler().fit_transform(df_clean)
+                    pca = PCA(n_components=2)
+                    components = pca.fit_transform(scaled)
 
-                # Run PCA
-                pca = PCA(n_components=2)
-                components = pca.fit_transform(scaled)
-                explained_var = pca.explained_variance_ratio_ * 100
-                st.write(f"🧠 PC1 explains {explained_var[0]:.2f}% of variance, PC2 explains {explained_var[1]:.2f}%")
+                    explained_var = pca.explained_variance_ratio_ * 100
+                    st.write(f"🧠 PC1 explains {explained_var[0]:.2f}% of variance, PC2 explains {explained_var[1]:.2f}%")
 
-                
+                    pca_df = pd.DataFrame(data=components, columns=["PC1", "PC2"])
+                    fig, ax = plt.subplots()
+                    sns.scatterplot(x="PC1", y="PC2", data=pca_df, ax=ax)
+                    ax.set_title("PCA: PC1 vs. PC2")
+                    st.pyplot(fig)
 
-                # Create a PCA DataFrame
-                pca_df = pd.DataFrame(data=components, columns=["PC1", "PC2"])
-                fig, ax = plt.subplots()
-                sns.scatterplot(x="PC1", y="PC2", data=pca_df, ax=ax)
-                ax.set_title("PCA: PC1 vs. PC2")
-                st.pyplot(fig)
+                    buf = io.BytesIO()
+                    fig.savefig(buf, format="png")
+                    st.download_button(
+                        label="📥 Download PCA Plot",
+                        data=buf.getvalue(),
+                        file_name="pca_plot.png",
+                        mime="image/png"
+                    )
 
-                # Save to in-memory PNG buffer
-                buf = io.BytesIO()
-                fig.savefig(buf, format="png")
-                st.download_button(
-                    label="📥 Download PCA Plot",
-                    data=buf.getvalue(),
-                    file_name="pca_plot.png",
-                    mime="image/png"
-                )
 
 
 
