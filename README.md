@@ -52,7 +52,7 @@ cd CleanVizBio
 python -m venv venv
 venv\Scripts\activate     # (or source venv/bin/activate on Mac/Linux)
 pip install -r requirements.txt
-streamlit run app.py
+streamlit run app.py '''
 
 
 
