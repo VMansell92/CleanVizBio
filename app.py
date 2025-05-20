@@ -6,6 +6,8 @@ from io import StringIO
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import io
+import numpy as np
+
 
 
 
@@ -47,7 +49,7 @@ if uploaded_file:
         numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
 
         if numeric_cols:
-            plot_type = st.selectbox("Select plot type", ["Histogram", "Box Plot", "Scatter Plot", "Heatmap", "PCA"])
+            plot_type = st.selectbox("Select plot type", ["Histogram", "Box Plot", "Scatter Plot", "Heatmap", "PCA", "Volcano Plot"])
 
             if plot_type == "Histogram":
                 col = st.selectbox("Column for histogram", numeric_cols)
@@ -143,6 +145,37 @@ if uploaded_file:
                         mime="image/png"
                     )
 
+            elif plot_type == "Volcano Plot":
+                st.write("🌋 Volcano Plot - log2FoldChange vs. p-value")
+
+                if "log2FoldChange" not in df.columns or "p-value" not in df.columns:
+                    st.error("This dataset must contain 'log2FoldChange' and 'p-value' columns.")
+                else:
+                    df_v = df.dropna(subset=["log2FoldChange", "p-value"]).copy()
+                    df_v["-log10(p-value)"] = -np.log10(df_v["p-value"])
+                    df_v["Significant"] = (abs(df_v["log2FoldChange"]) > 1) & (df_v["p-value"] < 0.05)
+
+                    fig, ax = plt.subplots()
+                    sns.scatterplot(
+                        data=df_v,
+                        x="log2FoldChange",
+                        y="-log10(p-value)",
+                        hue="Significant",
+                        palette={True: "red", False: "gray"},
+                        legend=False,
+                        ax=ax
+                    )
+                    ax.set_title("Volcano Plot")
+                    st.pyplot(fig)
+
+                    buf = io.BytesIO()
+                    fig.savefig(buf, format="png")
+                    st.download_button(
+                        label="📥 Download Volcano Plot",
+                        data=buf.getvalue(),
+                        file_name="volcano_plot.png",
+                        mime="image/png"
+                    )
 
 
 
