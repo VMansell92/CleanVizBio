@@ -45,7 +45,7 @@ if uploaded_file:
         numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
 
         if numeric_cols:
-            plot_type = st.selectbox("Select plot type", ["Histogram", "Box Plot", "Scatter Plot", "Heatmap"])
+            plot_type = st.selectbox("Select plot type", ["Histogram", "Box Plot", "Scatter Plot", "Heatmap", "PCA"])
 
             if plot_type == "Histogram":
                 col = st.selectbox("Column for histogram", numeric_cols)
