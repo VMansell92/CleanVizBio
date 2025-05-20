@@ -7,6 +7,10 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import io
 import numpy as np
+import markdown2
+import pdfkit
+import tempfile
+import os
 
 
 
@@ -189,26 +193,25 @@ else:
     st.info("Upload a .csv or .tsv file to get started.")
 
 
-if st.button("Generate Analysis Report (Markdown)"):
+
+
+if st.button("Generate PDF Report"):
     report_lines = []
 
     report_lines.append("# CleanVizBio Summary Report")
     report_lines.append("Generated with CleanVizBio – Scientific Data Visualization App\n")
 
-    # Dataset info
     report_lines.append("## Dataset Info")
     report_lines.append(f"- Number of rows: {df.shape[0]}")
     report_lines.append(f"- Number of columns: {df.shape[1]}")
     report_lines.append(f"- Numeric columns: {', '.join(numeric_cols)}\n")
 
-    # Basic Stats
     report_lines.append("## Basic Statistics\n")
     try:
         report_lines.append(df[numeric_cols].describe().to_markdown())
     except:
-        report_lines.append("No numeric columns available for statistics.")
+        report_lines.append("No numeric columns available for stats.")
 
-    # PCA variance
     try:
         explained_var = pca.explained_variance_ratio_ * 100
         report_lines.append("\n## PCA Summary")
@@ -218,14 +221,24 @@ if st.button("Generate Analysis Report (Markdown)"):
         report_lines.append("\n## PCA Summary")
         report_lines.append("- PCA not available or not yet run.")
 
-    # Combine and download
     report_md = "\n".join(report_lines)
+    report_html = markdown2.markdown(report_md)
 
-    st.download_button(
-        label="Download Markdown Report",
-        data=report_md,
-        file_name="cleanvizbio_report.md",
-        mime="text/markdown"
-    )
+    # Configure path to wkhtmltopdf
+    config = pdfkit.configuration(wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        pdfkit.from_string(report_html, tmp_file.name, configuration=config)
+        tmp_file_path = tmp_file.name
+
+    with open(tmp_file_path, "rb") as f:
+        st.download_button(
+            label="📄 Download PDF Report",
+            data=f.read(),
+            file_name="cleanvizbio_report.pdf",
+            mime="application/pdf"
+        )
+
+    os.remove(tmp_file_path)
 
 
