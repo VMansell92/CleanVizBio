@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from io import StringIO
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+import io
+
 
 
 st.set_page_config(page_title="CleanVizBio", layout="wide")
@@ -92,6 +94,17 @@ if uploaded_file:
                 sns.scatterplot(x="PC1", y="PC2", data=pca_df, ax=ax)
                 ax.set_title("PCA: PC1 vs. PC2")
                 st.pyplot(fig)
+
+                # Save to in-memory PNG buffer
+                buf = io.BytesIO()
+                fig.savefig(buf, format="png")
+                st.download_button(
+                    label="📥 Download PCA Plot",
+                    data=buf.getvalue(),
+                    file_name="pca_plot.png",
+                    mime="image/png"
+                )
+
 
 
         st.subheader("Download Cleaned Data")
