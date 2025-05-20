@@ -217,9 +217,11 @@ if st.button("📄 Generate Analysis Report (Markdown)"):
     report_md = "\n".join(report_lines)
 
     st.download_button(
-        label=⬇️ Download Markdown Report",
+        st.download_button(
+        label="📄 Download Report",
         data=report_md,
         file_name="cleanvizbio_report.md",
         mime="text/markdown"
     )
+
 
