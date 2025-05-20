@@ -81,6 +81,10 @@ if uploaded_file:
                 # Run PCA
                 pca = PCA(n_components=2)
                 components = pca.fit_transform(scaled)
+                explained_var = pca.explained_variance_ratio_ * 100
+                st.write(f"🧠 PC1 explains {explained_var[0]:.2f}% of variance, PC2 explains {explained_var[1]:.2f}%")
+
+                
 
                 # Create a PCA DataFrame
                 pca_df = pd.DataFrame(data=components, columns=["PC1", "PC2"])
