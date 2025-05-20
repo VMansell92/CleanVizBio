@@ -64,6 +64,10 @@ streamlit run app.py
 📄 License
 MIT License
 
-👩‍💻 Author
-Victoria Mansell
-GitHub @VMansell92
+## 👩‍💻 Author
+
+**Victoria Mansell**  
+🔗 [GitHub @VMansell92](https://github.com/VMansell92)
+📫 vmansell92@gmail.com
+🚀 Open to freelance and bioinformatics-related opportunities!
+
