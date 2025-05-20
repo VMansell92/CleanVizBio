@@ -55,11 +55,31 @@ if uploaded_file:
                 sns.histplot(df[col], kde=True, ax=ax)
                 st.pyplot(fig)
 
+                buf = io.BytesIO()
+                fig.savefig(buf, format="png")
+                st.download_button(
+                    label="📥 Download Histogram",
+                    data=buf.getvalue(),
+                    file_name="histogram.png",
+                    mime="image/png"
+                )
+
+
             elif plot_type == "Box Plot":
                 col = st.selectbox("Column for box plot", numeric_cols)
                 fig, ax = plt.subplots()
                 sns.boxplot(y=df[col], ax=ax)
                 st.pyplot(fig)
+
+                buf = io.BytesIO()
+                fig.savefig(buf, format="png")
+                st.download_button(
+                    label="📥 Download Box Plot",
+                    data=buf.getvalue(),
+                    file_name="box_plot.png",
+                    mime="image/png"
+                ) 
+
 
             elif plot_type == "Scatter Plot":
                 x = st.selectbox("X-axis", numeric_cols)
@@ -68,10 +88,30 @@ if uploaded_file:
                 sns.scatterplot(x=df[x], y=df[y], ax=ax)
                 st.pyplot(fig)
 
+                buf = io.BytesIO()
+                fig.savefig(buf, format="png")
+                st.download_button(
+                    label="📥 Download Scatter Plot",
+                    data=buf.getvalue(),
+                    file_name="scatter_plot.png",
+                    mime="image/png"
+                )
+
+
             elif plot_type == "Heatmap":
                 fig, ax = plt.subplots()
                 sns.heatmap(df[numeric_cols].corr(), annot=True, cmap='coolwarm', ax=ax)
                 st.pyplot(fig)
+
+                buf = io.BytesIO()
+                fig.savefig(buf, format="png")
+                st.download_button(
+                    label="📥 Download Heatmap",
+                    data=buf.getvalue(),
+                    file_name="heatmap.png",
+                    mime="image/png"
+                )
+
 
             elif plot_type == "PCA":
                 st.write("🔬 PCA - Principal Component Analysis")
