@@ -11,7 +11,7 @@ import markdown2
 import pdfkit
 import tempfile
 import os
-
+from base64 import b64encode
 
 
 
@@ -195,6 +195,12 @@ else:
 
 
 
+import markdown2
+import pdfkit
+import tempfile
+import os
+from base64 import b64encode
+
 if st.button("Generate PDF Report"):
     report_lines = []
 
@@ -212,33 +218,43 @@ if st.button("Generate PDF Report"):
     except:
         report_lines.append("No numeric columns available for stats.")
 
+    plot_img_html = ""  # Placeholder for image HTML
+
     try:
         explained_var = pca.explained_variance_ratio_ * 100
         report_lines.append("\n## PCA Summary")
         report_lines.append(f"- PC1 explains {explained_var[0]:.2f}% of variance")
         report_lines.append(f"- PC2 explains {explained_var[1]:.2f}% of variance")
+
+        # Save PCA figure as image
+        plot_buf = io.BytesIO()
+        fig.savefig(plot_buf, format="png")
+        plot_buf.seek(0)
+
+        # Encode image to base64 and embed it in the HTML
+        encoded = b64encode(plot_buf.read()).decode()
+        plot_img_html = f'<img src="data:image/png;base64,{encoded}" width="600"/>'
+
     except:
         report_lines.append("\n## PCA Summary")
         report_lines.append("- PCA not available or not yet run.")
 
+    # Convert markdown to HTML and insert plot
     report_md = "\n".join(report_lines)
-    report_html = markdown2.markdown(report_md)
+    report_html = markdown2.markdown(report_md) + plot_img_html
 
-    # Configure path to wkhtmltopdf
+    # Convert to PDF
     config = pdfkit.configuration(wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
-
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
         pdfkit.from_string(report_html, tmp_file.name, configuration=config)
         tmp_file_path = tmp_file.name
 
     with open(tmp_file_path, "rb") as f:
         st.download_button(
-            label="📄 Download PDF Report",
+            label="📄 Download PDF Report (with plot)",
             data=f.read(),
             file_name="cleanvizbio_report.pdf",
             mime="application/pdf"
         )
 
     os.remove(tmp_file_path)
-
-
