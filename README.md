@@ -45,7 +45,6 @@ This report can be:
 ---
 
 ## 📦 Run Locally
-
 ```bash
 git clone https://github.com/VMansell92/CleanVizBio.git
 cd CleanVizBio
@@ -53,5 +52,18 @@ python -m venv venv
 venv\Scripts\activate     # (or source venv/bin/activate on Mac/Linux)
 pip install -r requirements.txt
 streamlit run app.py
+```
+---
 
+## 🔗 Live App  
+👉 https://cleanvizbio-4fr2zewe8ykbzmbzi9leor.streamlit.app
+
+## 📄 License  
+MIT License
+
+## 👩‍💻 Author  
+**Victoria Mansell**  
+🔗 [GitHub @VMansell92](https://github.com/VMansell92)  
+📫 vmansell92@gmail.com  
+🚀 Open to freelance and bioinformatics-related opportunities!
 
