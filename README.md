@@ -52,22 +52,6 @@ cd CleanVizBio
 python -m venv venv
 venv\Scripts\activate     # (or source venv/bin/activate on Mac/Linux)
 pip install -r requirements.txt
-streamlit run app.py '''
+streamlit run app.py
 
-
-
-
-🔗 Live App
-👉 https://cleanvizbio.streamlit.app
-
-
-📄 License
-MIT License
-
-## 👩‍💻 Author
-
-**Victoria Mansell**  
-🔗 [GitHub @VMansell92](https://github.com/VMansell92)
-📫 vmansell92@gmail.com
-🚀 Open to freelance and bioinformatics-related opportunities!
 
